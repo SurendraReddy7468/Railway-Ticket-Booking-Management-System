@@ -4,56 +4,57 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Login({ setPage }) {
   const { loginUser } = useAuth();
-  const [form, setForm]   = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [email,    setEmail]    = useState("");
+  const [password, setPassword] = useState("");
+  const [error,    setError]    = useState("");
+  const [loading,  setLoading]  = useState(false);
 
-  const handleLogin = async () => {
-    if (!form.email || !form.password) { setError("Please fill in all fields"); return; }
+  const handle = async () => {
+    if (!email || !password) { setError("Please fill in all fields"); return; }
     setLoading(true); setError("");
     try {
-      const res = await loginApi(form.email, form.password);
-      if (res.token) { loginUser(res.token); setPage("search"); }
-      else setError(res.error || "Login failed");
-    } catch { setError("Cannot connect to server. Is backend running?"); }
+      const res = await loginApi(email, password);
+      if (res.error) setError(res.error);
+      else { loginUser(res); setPage("home"); }
+    } catch { setError("Cannot connect to server."); }
     setLoading(false);
   };
 
   return (
-    <div style={{ minHeight: "calc(100vh - 64px)", background: "var(--cream)", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 20px" }}>
-      <div className="card" style={{ width: "100%", maxWidth: "420px" }}>
-        <div style={{ textAlign: "center", marginBottom: "28px" }}>
-          <div style={{ fontSize: "36px", marginBottom: "8px" }}>🚂</div>
-          <h2 style={{ fontSize: "26px" }}>Welcome Back</h2>
-          <p style={{ color: "var(--gray)", fontSize: "14px", marginTop: "6px" }}>Sign in to your RailBook account</p>
-        </div>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
-          <div>
-            <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px" }}>Email Address</label>
-            <input type="email" placeholder="you@example.com" onChange={e => setForm({ ...form, email: e.target.value })} />
+    <div style={{ minHeight: "calc(100vh - 64px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 20px" }}>
+      <div style={{ width: "100%", maxWidth: 420 }}>
+        <div className="card" style={{ position: "relative", overflow: "hidden" }}>
+          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: "linear-gradient(90deg, #3b82f6, #06b6d4)" }} />
+          <div style={{ textAlign: "center", marginBottom: 28 }}>
+            <div style={{ fontSize: 40, marginBottom: 10 }}>🚂</div>
+            <h2 style={{ fontSize: 24, fontFamily: "'Syne', sans-serif" }}>Welcome Back</h2>
+            <p style={{ color: "#7a92b4", fontSize: 14, marginTop: 6 }}>Login to your RailBook account</p>
           </div>
-          <div>
-            <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px" }}>Password</label>
-            <input type="password" placeholder="••••••••" onChange={e => setForm({ ...form, password: e.target.value })}
-              onKeyDown={e => e.key === "Enter" && handleLogin()} />
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <div>
+              <label style={{ display: "block", marginBottom: 6 }}>EMAIL</label>
+              <input type="email" placeholder="you@example.com" value={email}
+                onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && handle()} />
+            </div>
+            <div>
+              <label style={{ display: "block", marginBottom: 6 }}>PASSWORD</label>
+              <input type="password" placeholder="Your password" value={password}
+                onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && handle()} />
+            </div>
+            {error && <div className="alert-error">{error}</div>}
+            <button className="btn-primary" style={{ width: "100%", padding: 13, marginTop: 4 }}
+              onClick={handle} disabled={loading}>
+              {loading ? "Logging in…" : "Login →"}
+            </button>
           </div>
-
-          {error && <div className="alert-error">{error}</div>}
-
-          <button className="btn-primary" style={{ width: "100%", padding: "13px", marginTop: "4px" }}
-            onClick={handleLogin} disabled={loading}>
-            {loading ? "Signing in…" : "Sign In"}
-          </button>
+          <div className="divider" />
+          <p style={{ textAlign: "center", fontSize: 14, color: "#7a92b4" }}>
+            Don't have an account?{" "}
+            <button onClick={() => setPage("register")} style={{ background: "none", color: "#60a5fa", fontWeight: 700, border: "none", cursor: "pointer" }}>
+              Create Account
+            </button>
+          </p>
         </div>
-
-        <hr className="divider" />
-        <p style={{ textAlign: "center", fontSize: "14px", color: "var(--gray)" }}>
-          Don't have an account?{" "}
-          <button onClick={() => setPage("register")} style={{ background: "none", color: "var(--navy)", fontWeight: "700", border: "none", cursor: "pointer" }}>
-            Register
-          </button>
-        </p>
       </div>
     </div>
   );
