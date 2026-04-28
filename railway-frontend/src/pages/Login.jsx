@@ -4,58 +4,239 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Login({ setPage }) {
   const { loginUser } = useAuth();
-  const [email,    setEmail]    = useState("");
-  const [password, setPassword] = useState("");
-  const [error,    setError]    = useState("");
-  const [loading,  setLoading]  = useState(false);
-
-  const handle = async () => {
-    if (!email || !password) { setError("Please fill in all fields"); return; }
-    setLoading(true); setError("");
+  const [mode, setMode] = useState("password");
+  const [step, setStep] = useState(1);
+  const [form, setForm] = useState({ email: "", password: "", otp: "" });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const handleLogin = async () => {
+    if (!form.email || !form.password) {
+      setError("Please fill in all fields");
+      return;
+    }
+    setLoading(true);
+    setError("");
     try {
-      const res = await loginApi(email, password);
-      if (res.error) setError(res.error);
-      else { loginUser(res); setPage("home"); }
-    } catch { setError("Cannot connect to server."); }
+      const res = await loginApi(form.email, form.password);
+      if (res.token) {
+        loginUser(res.token);
+        setPage("search");
+      } else setError(res.error || "Login failed");
+    } catch {
+      setError("Server error");
+    }
     setLoading(false);
+  };
+  const sendOtp = async () => {
+    if (!form.email) return setError("Enter email first");
+    setLoading(true);
+    setError("");
+    setTimeout(() => {
+      setStep(2);
+      setLoading(false);
+    }, 1000);
+  };
+
+  const verifyOtp = async () => {
+    if (!form.otp) return setError("Enter OTP");
+    setLoading(true);
+    setTimeout(() => {
+      loginUser("demo-token");
+      setPage("search");
+    }, 1000);
+  };
+
+  const handleGoogleLogin = () => {
+    alert("Google Login Clicked");
   };
 
   return (
-    <div style={{ minHeight: "calc(100vh - 64px)", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 20px" }}>
-      <div style={{ width: "100%", maxWidth: 420 }}>
-        <div className="card" style={{ position: "relative", overflow: "hidden" }}>
-          <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: "linear-gradient(90deg, #3b82f6, #06b6d4)" }} />
-          <div style={{ textAlign: "center", marginBottom: 28 }}>
-            <div style={{ fontSize: 40, marginBottom: 10 }}>🚂</div>
-            <h2 style={{ fontSize: 24, fontFamily: "'Syne', sans-serif" }}>Welcome Back</h2>
-            <p style={{ color: "#7a92b4", fontSize: 14, marginTop: 6 }}>Login to your RailBook account</p>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            <div>
-              <label style={{ display: "block", marginBottom: 6 }}>EMAIL</label>
-              <input type="email" placeholder="you@example.com" value={email}
-                onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key === "Enter" && handle()} />
-            </div>
-            <div>
-              <label style={{ display: "block", marginBottom: 6 }}>PASSWORD</label>
-              <input type="password" placeholder="Your password" value={password}
-                onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === "Enter" && handle()} />
-            </div>
-            {error && <div className="alert-error">{error}</div>}
-            <button className="btn-primary" style={{ width: "100%", padding: 13, marginTop: 4 }}
-              onClick={handle} disabled={loading}>
-              {loading ? "Logging in…" : "Login →"}
-            </button>
-          </div>
-          <div className="divider" />
-          <p style={{ textAlign: "center", fontSize: 14, color: "#7a92b4" }}>
+    <>
+      <style>{`
+        .login-bg {
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          overflow: hidden;
+
+          background: linear-gradient(135deg, #2563EB, #4F46E5, #073468);
+          background-size: 200% 200%;
+          animation: gradientMove 8s ease infinite;
+        }
+
+        @keyframes gradientMove {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+
+        .bg-circle {
+          position: absolute;
+          border-radius: 50%;
+          filter: blur(80px);
+          opacity: 0.4;
+        }
+
+        .c1 {
+          width: 300px;
+          height: 300px;
+          background: #93C5FD;
+          top: 10%;
+          left: 5%;
+          animation: float 10s ease-in-out infinite;
+        }
+
+        .c2 {
+          width: 250px;
+          height: 250px;
+          background: #2f206c;
+          bottom: 10%;
+          right: 5%;
+          animation: float 12s ease-in-out infinite;
+        }
+
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-30px); }
+        }
+
+        .login-card {
+          width: 100%;
+          max-width: 420px;
+          backdrop-filter: blur(20px);
+          background: rgba(134, 33, 33, 0.15);
+          border-radius: 20px;
+          padding: 28px;
+          z-index: 2;
+          color: white;
+        }
+
+        input {
+          width: 100%;
+          padding: 10px;
+          border-radius: 8px;
+          border: none;
+          margin-top: 6px;
+          background: rgba(252, 251, 251, 0.52);
+          color: white;
+        }
+
+        .btn {
+          width: 100%;
+          padding: 12px;
+          border-radius: 10px;
+          border: none;
+          margin-top: 10px;
+          cursor: pointer;
+          font-weight: 600;
+        }
+
+        .btn-primary {
+          background: linear-gradient(135deg, #2563EB, #4F46E5);
+          color: white;
+        }
+
+        .btn-google {
+          background: linear-gradient(135deg, #ffffffbf, #f0f0f0);
+          color: black;
+        }
+
+        .switch {
+          text-align: center;
+          margin-top: 10px;
+          cursor: pointer;
+          font-size: 14px;
+        }
+
+        .divider {
+          margin: 20px 0;
+          text-align: center;
+          font-size: 12px;
+          opacity: 0.7;
+        }
+
+        .error {
+          background: rgb(143, 67, 67);
+          padding: 8px;
+          border-radius: 6px;
+          margin-top: 10px;
+        }
+      `}</style>
+
+      {/* ===== UI ===== */}
+      <div className="login-bg">
+        <div className="bg-circle c1"></div>
+        <div className="bg-circle c2"></div>
+        <div className="login-card">
+          <h2 style={{ textAlign: "center" }}>Welcome Back 🚂</h2>
+          <button className="btn btn-google" onClick={handleGoogleLogin}>
+            Continue with Google
+          </button>
+          <div className="divider">OR</div>
+          {mode === "password" && (
+            <>
+              <input
+                type="email"
+                placeholder="Email"
+                onChange={e => setForm({ ...form, email: e.target.value })}
+              />
+              <input
+                type="password"
+                placeholder="Password"
+                onChange={e => setForm({ ...form, password: e.target.value })}
+              />
+              <button className="btn btn-primary" onClick={handleLogin}>
+                Login
+              </button>
+              <div className="switch" onClick={() => setMode("otp")}>
+                Login with OTP
+              </div>
+            </>
+          )}
+          {mode === "otp" && (
+            <>
+              {step === 1 && (
+                <>
+                  <input
+                    type="email"
+                    placeholder="Enter Email"
+                    onChange={e => setForm({ ...form, email: e.target.value })}
+                  />
+                  <button className="btn btn-primary" onClick={sendOtp}>
+                    Send OTP
+                  </button>
+                </>
+              )}
+
+              {step === 2 && (
+                <>
+                  <input
+                    type="text"
+                    placeholder="Enter OTP"
+                    onChange={e => setForm({ ...form, otp: e.target.value })}
+                  />
+                  <button className="btn btn-primary" onClick={verifyOtp}>
+                    Verify OTP
+                  </button>
+                </>
+              )}
+              <div className="switch" onClick={() => { setMode("password"); setStep(1); }}>
+                Back to Password Login
+              </div>
+            </>
+          )}
+          {error && <div className="error">{error}</div>}
+
+          <p style={{ textAlign: "center", marginTop: "15px" }}>
             Don't have an account?{" "}
-            <button onClick={() => setPage("register")} style={{ background: "none", color: "#60a5fa", fontWeight: 700, border: "none", cursor: "pointer" }}>
-              Create Account
-            </button>
+            <span onClick={() => setPage("register")} style={{ cursor: "pointer", fontWeight: "600" }}>
+              Register
+            </span>
           </p>
         </div>
       </div>
-    </div>
+    </>
   );
 }
