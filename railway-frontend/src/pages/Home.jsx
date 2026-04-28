@@ -1,190 +1,381 @@
-export default function Home({ setPage, user }) {
+export default function Home({ setPage }) {
   const features = [
-    { icon: "⚡", title: "Instant Booking",   desc: "Book seats in seconds with real-time availability" },
-    { icon: "🎫", title: "Easy Cancellation", desc: "Cancel anytime with instant refund processing" },
-    { icon: "📱", title: "Track Bookings",    desc: "View all your journeys and download tickets" },
-    { icon: "🔒", title: "Secure Payments",   desc: "100% secure transactions with payment history" },
+    { 
+       icon: "🔍", 
+       title: "Search Trains", 
+       desc: "Find trains between any two cities instantly",
+      image: "/images/custom/Searching-train.jpg"
+   },
+    { icon: "💺", title: "Book Seats", desc: "Reserve your seat with one click", image: "/images/custom/Train-seats.jpg" },
+    { icon: "📋", title: "Manage Bookings", desc: "View, track and cancel your bookings anytime", image: "/images/custom/Booking.png" },
+    { icon: "⚡", title: "Instant Confirmation", desc: "Get booking ID immediately after payment", image: "/images/custom/ticket-sample.jpg" },
   ];
 
-  const stats = [
-    { value: "500+", label: "Trains" },
-    { value: "50K+", label: "Passengers" },
-    { value: "100+", label: "Cities" },
-    { value: "99.9%", label: "Uptime" },
-  ];
-
-  const popularRoutes = [
-    { from: "Delhi", to: "Mumbai",   duration: "16h", price: "₹500" },
-    { from: "Mumbai", to: "Chennai", duration: "12h", price: "₹500" },
-    { from: "Delhi", to: "Kolkata",  duration: "18h", price: "₹500" },
-    { from: "Bangalore", to: "Hyderabad", duration: "6h", price: "₹500" },
+  const routes = [
+    { from: "Delhi", to: "Mumbai", time: "16h 35m", price: "₹1,200" },
+    { from: "Mumbai", to: "Chennai", time: "21h 10m", price: "₹1,500" },
+    { from: "Kolkata", to: "Delhi", time: "17h 45m", price: "₹1,100" },
+    { from: "Bangalore", to: "Hyderabad", time: "10h 20m", price: "₹800" },
   ];
 
   return (
-    <div style={{ minHeight: "calc(100vh - 64px)" }}>
-
-      {/* ── HERO ── */}
+    <div>
       <div style={{
-        position: "relative", overflow: "hidden",
-        padding: "90px 24px 80px",
-        background: "linear-gradient(180deg, rgba(7,18,36,0) 0%, rgba(4,13,26,0.8) 100%)",
+        backgroundImage: "url('/images/custom/Indian-Railway.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
+        position: "relative",
+        overflow: "hidden"
       }}>
-        {/* Background glow orbs */}
-        <div style={{ position: "absolute", top: -100, left: "10%", width: 500, height: 500, borderRadius: "50%", background: "radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", top: 50, right: "5%", width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(6,182,212,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
+        
+        <div style={{
+          background: "linear-gradient(135deg, rgba(31, 42, 107, 0.85) 0%, rgba(26,42,122,0.8) 60%, rgba(12, 2, 44, 0.82) 100%)",
+          padding: "100px 40px",
+          position: "center",
+          zIndex: 2
+        }}>
+          {/* Decorative Elements */}
+          <div style={{ position: "absolute", top: -60, right: -60, width: 300, height: 300, borderRadius: "50%", background: "rgba(149, 108, 14, 0.08)" }} />
+          <div style={{ position: "absolute", bottom: -80, left: -40, width: 400, height: 400, borderRadius: "50%", background: "rgba(201, 165, 80, 0)" }} />
 
-        <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center", position: "relative" }}>
-          <div style={{
-            display: "inline-flex", alignItems: "center", gap: 8,
-            background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.25)",
-            borderRadius: 20, padding: "6px 16px", marginBottom: 28,
-            fontSize: 12, fontWeight: 600, color: "#60a5fa", letterSpacing: "0.1em", textTransform: "uppercase",
-          }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#10b981", display: "inline-block", animation: "pulse-glow 2s infinite" }} />
-            India's Smart Railway Booking
-          </div>
+          <div style={{ position: "relative", maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
 
-          <h1 style={{
-            fontFamily: "'Syne', sans-serif", fontSize: "clamp(40px, 7vw, 72px)",
-            fontWeight: 800, lineHeight: 1.05, marginBottom: 24,
-            background: "linear-gradient(135deg, #f0f6ff 0%, #60a5fa 50%, #06b6d4 100%)",
-            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-            letterSpacing: "-0.03em",
-          }}>
-            Book Your Train<br />Journey Today
-          </h1>
+            <div style={{
+              display: "inline-block",
+              background: "rgba(232,184,75,0.2)",
+              border: "1.5px solid rgba(232,184,75,0.4)",
+              color: "var(--gold)",
+              padding: "8px 18px",
+              borderRadius: "25px",
+              fontSize: "13px",
+              fontWeight: "700",
+              marginBottom: "24px",
+              letterSpacing: "1.5px",
+              textTransform: "uppercase",
+              backdropFilter: "blur(10px)"
+            }}>
+              🚂 INDIA'S FASTEST BOOKING PLATFORM
+            </div>
 
-          <p style={{ fontSize: 17, color: "#7a92b4", lineHeight: 1.7, marginBottom: 40, maxWidth: 560, margin: "0 auto 40px" }}>
-            Fast, reliable and hassle-free railway ticket booking. Search trains, book seats and manage all your travel in one place.
-          </p>
+            {/* Heading */}
+            <h1 style={{
+              fontFamily: "Playfair Display, serif",
+              fontSize: "clamp(40px, 6vw, 68px)",
+              color: "white",
+              lineHeight: 1.15,
+              marginBottom: "24px",
+              fontWeight: "700",
+              textShadow: "0 4px 20px rgba(0,0,0,0.3)"
+            }}>
+              Book Your Perfect<br />
+              <span style={{ color: "var(--gold)", textShadow: "0 4px 20px rgba(232,184,75,0.4)" }}>Railway Journey</span>
+            </h1>
 
-          <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap", marginBottom: 60 }}>
-            <button className="btn-gold" style={{ padding: "14px 32px", fontSize: 15, borderRadius: 12 }}
-              onClick={() => setPage(user ? "search" : "register")}>
-              🔍 Search Trains
-            </button>
-            {!user && (
-              <button className="btn-outline" style={{ padding: "14px 32px", fontSize: 15, borderRadius: 12 }}
-                onClick={() => setPage("register")}>
-                Create Account →
+            <p style={{ 
+              color: "rgba(255,255,255,0.75)", 
+              fontSize: "18px", 
+              marginBottom: "48px", 
+              lineHeight: 1.8,
+              maxWidth: "600px",
+              margin: "0 auto 48px"
+            }}>
+              Fast, reliable, and hassle-free railway ticket booking.<br />
+              Search trains, compare prices, and book seats in seconds.
+            </p>
+
+            <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap", alignItems: "center" }}>
+              <button 
+                onClick={() => setPage("search")}
+                style={{
+                  background: "var(--gold)",
+                  color: "var(--navy)",
+                  padding: "16px 42px",
+                  fontSize: "16px",
+                  fontWeight: "700",
+                  borderRadius: "12px",
+                  border: "none",
+                  cursor: "pointer",
+                  letterSpacing: "0.5px",
+                  boxShadow: "0 8px 24px rgba(232,184,75,0.35)",
+                  transition: "all 0.3s ease",
+                  transform: "translateY(0)"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "var(--gold-light)";
+                  e.currentTarget.style.transform = "translateY(-3px)";
+                  e.currentTarget.style.boxShadow = "0 12px 32px rgba(232,184,75,0.45)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "var(--gold)";
+                  e.currentTarget.style.transform = "translateY(0)";
+                  e.currentTarget.style.boxShadow = "0 8px 24px rgba(232,184,75,0.35)";
+                }}
+              >
+                ✈️ Book Ticket Now
               </button>
-            )}
-          </div>
 
-          {/* Quick Search Bar */}
-          <div style={{
-            background: "rgba(14,32,64,0.8)", border: "1px solid rgba(99,160,255,0.15)",
-            borderRadius: 16, padding: "20px 24px", display: "flex", gap: 12, alignItems: "center",
-            flexWrap: "wrap", backdropFilter: "blur(20px)", maxWidth: 700, margin: "0 auto",
-          }}>
-            <div style={{ flex: 1, minWidth: 140 }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: "#4a6080", letterSpacing: "0.1em", marginBottom: 6, textTransform: "uppercase" }}>FROM</div>
-              <input placeholder="e.g. Delhi" style={{ background: "transparent", border: "none", padding: "4px 0", fontSize: 15, color: "#f0f6ff", fontWeight: 500 }}
-                onFocus={e => e.target.style.outline = "none"}
-                id="hero-from"
-              />
+              <button 
+                onClick={() => setPage("register")}
+                style={{
+                  background: "transparent",
+                  color: "white",
+                  border: "2px solid rgba(255,255,255,0.4)",
+                  padding: "14px 40px",
+                  fontSize: "16px",
+                  fontWeight: "600",
+                  borderRadius: "12px",
+                  cursor: "pointer",
+                  letterSpacing: "0.5px",
+                  transition: "all 0.3s ease",
+                  backdropFilter: "blur(10px)"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = "white";
+                  e.currentTarget.style.background = "rgba(255,255,255,0.1)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.4)";
+                  e.currentTarget.style.background = "transparent";
+                }}
+              >
+                Create Account
+              </button>
             </div>
-            <div style={{ color: "#f0b429", fontSize: 22, padding: "0 8px" }}>⇄</div>
-            <div style={{ flex: 1, minWidth: 140 }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: "#4a6080", letterSpacing: "0.1em", marginBottom: 6, textTransform: "uppercase" }}>TO</div>
-              <input placeholder="e.g. Mumbai" style={{ background: "transparent", border: "none", padding: "4px 0", fontSize: 15, color: "#f0f6ff", fontWeight: 500 }}
-                onFocus={e => e.target.style.outline = "none"}
-                id="hero-to"
-              />
-            </div>
-            <button className="btn-primary" style={{ padding: "12px 28px", borderRadius: 10, whiteSpace: "nowrap" }}
-              onClick={() => {
-                const from = document.getElementById("hero-from").value;
-                const to   = document.getElementById("hero-to").value;
-                if (from && to) sessionStorage.setItem("hs", JSON.stringify({ from, to }));
-                setPage("search");
-              }}>
-              Search
-            </button>
           </div>
         </div>
       </div>
 
-      {/* ── STATS ── */}
-      <div style={{ background: "rgba(14,32,64,0.4)", borderTop: "1px solid rgba(99,160,255,0.08)", borderBottom: "1px solid rgba(99,160,255,0.08)", padding: "32px 24px" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 24 }}>
-          {stats.map((s, i) => (
-            <div key={i} style={{ textAlign: "center" }}>
-              <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 30, fontWeight: 800, color: "#60a5fa" }}>{s.value}</div>
-              <div style={{ fontSize: 13, color: "#4a6080", marginTop: 4, fontWeight: 500 }}>{s.label}</div>
+      {/* Quick Search Section */}
+      <div style={{ background: "white", boxShadow: "0 -8px 30px rgba(0,0,0,0.1)", padding: "0 20px" }}>
+        <div style={{ maxWidth: 1000, margin: "0 auto", padding: "32px 20px", display: "flex", gap: "16px", flexWrap: "wrap", alignItems: "flex-end" }}>
+          <div style={{ flex: 1, minWidth: "180px" }}>
+            <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "var(--navy)", marginBottom: "8px", letterSpacing: "1px", textTransform: "uppercase" }}>From City</label>
+            <input id="hs-from" placeholder="e.g., Delhi" style={{ fontSize: "15px", padding: "12px 14px" }} />
+          </div>
+          <div style={{ color: "var(--gold)", fontSize: "24px", paddingBottom: "8px", animation: "pulse 2s infinite" }}>⇄</div>
+          <div style={{ flex: 1, minWidth: "180px" }}>
+            <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "var(--navy)", marginBottom: "8px", letterSpacing: "1px", textTransform: "uppercase" }}>To City</label>
+            <input id="hs-to" placeholder="e.g., Mumbai" style={{ fontSize: "15px", padding: "12px 14px" }} />
+          </div>
+          <button 
+            onClick={() => {
+              const from = document.getElementById("hs-from").value;
+              const to = document.getElementById("hs-to").value;
+              if (from && to) {
+                sessionStorage.setItem("hs", JSON.stringify({ from, to }));
+                setPage("search");
+              }
+            }}
+            style={{
+              background: "var(--navy)",
+              color: "white",
+              padding: "12px 32px",
+              borderRadius: "8px",
+              border: "none",
+              cursor: "pointer",
+              fontWeight: "600",
+              fontSize: "15px",
+              whiteSpace: "nowrap",
+              transition: "all 0.2s"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "var(--navy-light)";
+              e.currentTarget.style.transform = "translateY(-2px)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "var(--navy)";
+              e.currentTarget.style.transform = "translateY(0)";
+            }}
+            
+          >
+            🔍 Search
+          </button>
+        </div>
+      </div>
+
+      {/* Features Section */}
+      <div style={{ maxWidth: 1200, margin: "80px auto", padding: "0 20px" }}>
+        <div style={{ textAlign: "center", marginBottom: "60px" }}>
+          <h2 style={{ fontSize: "clamp(28px, 4vw, 44px)", marginBottom: "12px", color: "var(--navy)" }}>
+            Why Choose RailBook?
+          </h2>
+          <p style={{ color: "var(--gray)", fontSize: "17px", maxWidth: "500px", margin: "0 auto" }}>
+            We make railway travel simple, affordable, and convenient
+          </p>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px" }}>
+          {features.map((f, i) => (
+            <div 
+              key={i}
+              style={{
+                background: "white",
+                borderRadius: "16px",
+                padding: "32px 24px",
+                textAlign: "center",
+                boxShadow: "0 4px 16px rgba(0,0,0,0.06)",
+                border: "1px solid #f0f0f0",
+                transition: "all 0.3s ease",
+                cursor: "pointer"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-8px)";
+                e.currentTarget.style.boxShadow = "0 12px 32px rgba(11,19,64,0.12)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 4px 16px rgba(0,0,0,0.06)";
+              }}
+            >
+      {/* Image Section */}
+        <div style={{ height: "160px", overflow: "hidden", borderRadius: "12px", marginBottom: "16px" }}>
+          <img
+            src={f.image}
+            alt={f.title}
+            loading="lazy"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              transition: "transform 0.4s ease"
+              }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.1)"}
+            onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
+          />
+       </div>
+        <div style={{ fontSize: "36px", marginBottom: "8px" }}>{f.icon}</div>
+          <h3 style={{ fontSize: "18px", marginBottom: "8px", color: "var(--navy)" }}>
+            {f.title}
+          </h3>
+            <p style={{ color: "var(--gray)", fontSize: "14px", lineHeight: 1.6 }}>
+              {f.desc}
+            </p> 
             </div>
           ))}
         </div>
       </div>
 
-      {/* ── POPULAR ROUTES ── */}
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "60px 24px" }}>
-        <div style={{ marginBottom: 32, display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-          <div>
-            <h2 className="section-title">Popular Routes</h2>
-            <p className="section-sub" style={{ marginBottom: 0 }}>Most booked train routes across India</p>
+      {/* Popular Routes Section */}
+      <div style={{ background: "#f9fafb", padding: "80px 20px" }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: "60px" }}>
+            <h2 style={{ fontSize: "clamp(28px, 4vw, 44px)", marginBottom: "12px", color: "var(--navy)" }}>
+              Popular Routes
+            </h2>
+            <p style={{ color: "var(--gray)", fontSize: "17px" }}>
+              Most booked railway routes across India
+            </p>
           </div>
-          <button className="btn-outline" style={{ fontSize: 13 }} onClick={() => setPage("search")}>View All →</button>
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16 }}>
-          {popularRoutes.map((r, i) => (
-            <div key={i} className="card" style={{ cursor: "pointer", position: "relative", overflow: "hidden" }}
-              onClick={() => {
-                sessionStorage.setItem("hs", JSON.stringify({ from: r.from, to: r.to }));
-                setPage("search");
-              }}>
-              <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, #3b82f6, #06b6d4)`, opacity: 0.6 }} />
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                <span style={{ fontSize: 12, color: "#4a6080", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em" }}>Route</span>
-                <span style={{ fontSize: 12, color: "#f0b429", fontWeight: 700 }}>{r.price}</span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <span style={{ fontWeight: 700, fontSize: 16, color: "#f0f6ff" }}>{r.from}</span>
-                <span style={{ color: "#4a6080", fontSize: 12, flex: 1, textAlign: "center" }}>━━ 🚂 ━━</span>
-                <span style={{ fontWeight: 700, fontSize: 16, color: "#f0f6ff" }}>{r.to}</span>
-              </div>
-              <div style={{ marginTop: 10, fontSize: 12, color: "#7a92b4" }}>⏱ {r.duration}</div>
-            </div>
-          ))}
-        </div>
-      </div>
 
-      {/* ── FEATURES ── */}
-      <div style={{ background: "rgba(14,32,64,0.3)", borderTop: "1px solid rgba(99,160,255,0.08)", padding: "60px 24px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 40 }}>
-            <h2 className="section-title">Everything You Need</h2>
-            <p className="section-sub" style={{ marginBottom: 0 }}>A complete railway booking experience</p>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20 }}>
-            {features.map((f, i) => (
-              <div key={i} className="card" style={{ textAlign: "center", padding: "32px 24px" }}>
-                <div style={{ fontSize: 36, marginBottom: 16 }}>{f.icon}</div>
-                <h3 style={{ fontSize: 16, marginBottom: 8, fontFamily: "'Syne', sans-serif" }}>{f.title}</h3>
-                <p style={{ fontSize: 13, color: "#7a92b4", lineHeight: 1.6 }}>{f.desc}</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "20px" }}>
+            {routes.map((r, i) => (
+              <div 
+                key={i}
+                onClick={() => {
+                  sessionStorage.setItem("hs", JSON.stringify({ from: r.from, to: r.to }));
+                  setPage("search");
+                }}
+                style={{
+                  background: "white",
+                  border: "2px solid #e5e7eb",
+                  borderRadius: "14px",
+                  padding: "24px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  minHeight: "140px"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = "var(--gold)";
+                  e.currentTarget.style.boxShadow = "0 8px 24px rgba(232,184,75,0.2)";
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = "#e5e7eb";
+                  e.currentTarget.style.boxShadow = "none";
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}
+              >
+                <div>
+                  <div style={{ fontWeight: "700", fontSize: "17px", color: "var(--navy)", marginBottom: "6px" }}>
+                    {r.from} → {r.to}
+                  </div>
+                  <div style={{ color: "var(--gray)", fontSize: "13px", marginTop: "4px" }}>⏱ {r.time}</div>
+                </div>
+                <div style={{ textAlign: "right", marginTop: "12px" }}>
+                  <div style={{ color: "var(--gold)", fontWeight: "700", fontSize: "18px" }}>{r.price}</div>
+                  <div style={{ color: "var(--gray)", fontSize: "12px" }}>onwards</div>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* ── CTA ── */}
-      {!user && (
-        <div style={{ padding: "60px 24px", textAlign: "center" }}>
-          <div style={{ maxWidth: 500, margin: "0 auto" }}>
-            <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: 32, marginBottom: 16 }}>Ready to Book?</h2>
-            <p style={{ color: "#7a92b4", marginBottom: 28 }}>Create a free account and start booking train tickets in minutes.</p>
-            <button className="btn-gold" style={{ padding: "14px 40px", fontSize: 15, borderRadius: 12 }} onClick={() => setPage("register")}>
-              Get Started Free →
-            </button>
-          </div>
+      {/* CTA Section */}
+      <div style={{
+        background: "linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%)",
+        textAlign: "center",
+        padding: "80px 20px",
+        position: "relative",
+        overflow: "hidden"
+      }}>
+        <div style={{ position: "absolute", top: -40, right: -60, width: 300, height: 300, borderRadius: "50%", background: "rgba(232,184,75,0.08)" }} />
+        
+        <div style={{ position: "relative", zIndex: 2, maxWidth: "600px", margin: "0 auto" }}>
+          <h2 style={{ color: "white", fontSize: "clamp(28px, 4vw, 44px)", marginBottom: "16px" }}>
+            Ready to Book Your Journey?
+          </h2>
+          <p style={{ color: "rgba(255,255,255,0.7)", marginBottom: "32px", fontSize: "17px" }}>
+            Join thousands of satisfied travelers. Book now and get instant confirmation.
+          </p>
+          <button 
+            onClick={() => setPage("register")}
+            style={{
+              background: "var(--gold)",
+              color: "var(--navy)",
+              padding: "16px 42px",
+              fontSize: "16px",
+              fontWeight: "700",
+              borderRadius: "12px",
+              border: "none",
+              cursor: "pointer",
+              boxShadow: "0 8px 24px rgba(232,184,75,0.35)",
+              transition: "all 0.3s ease"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "var(--gold-light)";
+              e.currentTarget.style.transform = "translateY(-3px)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "var(--gold)";
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow = "0 8px 24px rgba(232,184,75,0.35)";
+            }}
+          >
+            Create Free Account →
+          </button>
         </div>
-      )}
+      </div>
 
       {/* Footer */}
-      <div style={{ borderTop: "1px solid rgba(99,160,255,0.08)", padding: "24px", textAlign: "center", color: "#4a6080", fontSize: 13 }}>
-        © 2024 RailBook · India's Smart Railway Booking System
-      </div>
+      <>
+        <footer style={{ background: "#07102a", padding: "32px 40px", textAlign: "center" }}>
+          <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px" }}>
+            © 2025 RailBook — India's Premier Railway Ticket Booking System
+          </p>
+        </footer>
+
+        <style>{`
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+          }
+        `}</style>
+      </>
     </div>
   );
 }
