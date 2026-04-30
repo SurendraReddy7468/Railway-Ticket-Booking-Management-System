@@ -23,31 +23,33 @@ export default function SearchTrains() {
     if (!from || !to) { setError("Please enter both cities"); return; }
     setLoading(true); setError(""); setSearched(false);
     try {
-      const res = await searchTrainApi({ starting: from, destination: to });
+      const res = await searchTrainApi({ source: from, destination: to });
       setTrains(Array.isArray(res) ? res : []);
       setSearched(true);
-      if (!res.length) setError(`No trains found for ${from} → ${to}`);
+      if (!Array.isArray(res) || res.length === 0)
+        setError(`No trains found for ${from} → ${to}`);
     } catch { setError("Search failed. Is the backend running?"); }
     setLoading(false);
   };
 
   return (
     <div className="page">
-      <h2 style={{ fontSize: "32px", marginBottom: "6px" }}>Search Trains</h2>
-      <p style={{ color: "var(--gray)", marginBottom: "28px" }}>Find available trains between cities</p>
+      <h2 className="section-title">Search Trains</h2>
+      <p className="section-sub">Find available trains between cities</p>
 
-      {/* Search Form */}
-      <div className="card" style={{ marginBottom: "28px" }}>
-        <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", alignItems: "flex-end" }}>
-          <div style={{ flex: 1, minWidth: "180px" }}>
-            <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "var(--gray)", marginBottom: "6px", letterSpacing: "1px" }}>FROM CITY</label>
-            <input placeholder="e.g. Delhi" value={from} onChange={e => setFrom(e.target.value)}
+      <div className="card" style={{ marginBottom: 28 }}>
+        <div style={{ display: "flex", gap: 16, flexWrap: "wrap", alignItems: "flex-end" }}>
+          <div style={{ flex: 1, minWidth: 180 }}>
+            <label style={{ display: "block", marginBottom: 6 }}>FROM CITY</label>
+            <input placeholder="e.g. Delhi" value={from}
+              onChange={e => setFrom(e.target.value)}
               onKeyDown={e => e.key === "Enter" && search()} />
           </div>
-          <div style={{ fontSize: "24px", color: "var(--gold)", paddingBottom: "8px" }}>⇄</div>
-          <div style={{ flex: 1, minWidth: "180px" }}>
-            <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "var(--gray)", marginBottom: "6px", letterSpacing: "1px" }}>TO CITY</label>
-            <input placeholder="e.g. Mumbai" value={to} onChange={e => setTo(e.target.value)}
+          <div style={{ fontSize: 24, color: "#f0b429", paddingBottom: 8 }}>⇄</div>
+          <div style={{ flex: 1, minWidth: 180 }}>
+            <label style={{ display: "block", marginBottom: 6 }}>TO CITY</label>
+            <input placeholder="e.g. Mumbai" value={to}
+              onChange={e => setTo(e.target.value)}
               onKeyDown={e => e.key === "Enter" && search()} />
           </div>
           <button className="btn-primary" style={{ padding: "11px 32px", whiteSpace: "nowrap" }}
@@ -57,15 +59,15 @@ export default function SearchTrains() {
         </div>
       </div>
 
-      {error && <div className="alert-error" style={{ marginBottom: "20px" }}>{error}</div>}
+      {error && <div className="alert-error" style={{ marginBottom: 20 }}>{error}</div>}
 
       {searched && trains.length > 0 && (
-        <p style={{ color: "var(--gray)", fontSize: "14px", marginBottom: "16px" }}>
-          Found <strong>{trains.length}</strong> train{trains.length > 1 ? "s" : ""} for <strong>{from} → {to}</strong>
+        <p style={{ color: "#7a92b4", fontSize: 14, marginBottom: 16 }}>
+          Found <strong style={{ color: "#f0f6ff" }}>{trains.length}</strong> train{trains.length > 1 ? "s" : ""} for <strong style={{ color: "#f0f6ff" }}>{from} → {to}</strong>
         </p>
       )}
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         {trains.map(t => <TrainCard key={t.id} train={t} />)}
       </div>
     </div>

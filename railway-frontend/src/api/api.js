@@ -41,3 +41,5 @@ export const cancelBookingApi = (booking_id)       => post("/user/cancel_booking
 export const addTrainApi      = (data)             => post("/admin/add_train", data);
 export const allTrainsApi     = ()                 => get("/admin/all_trains");
 export const deleteTrainApi   = (id)               => del(`/admin/delete_train/${id}`);
+export const adminStatsApi  = () => get("/admin/stats");
+export const getFeedbackApi = () => get("/admin/feedback");

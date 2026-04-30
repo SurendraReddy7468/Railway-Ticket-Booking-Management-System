@@ -25,177 +25,198 @@ def get_db():
     finally:
         db.close()
 
-def hash_password(password: str) -> str:
-    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+def hash_password(pw: str) -> str:
+    return bcrypt.hashpw(pw.encode(), bcrypt.gensalt()).decode()
 
-def verify_password(password: str, hashed: str) -> bool:
-    return bcrypt.checkpw(password.encode("utf-8"), hashed.encode("utf-8"))
+def verify_password(pw: str, hashed: str) -> bool:
+    return bcrypt.checkpw(pw.encode(), hashed.encode())
 
 def get_current_user(authorization: str = Header(None)):
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Not authenticated")
-    token = authorization.split(" ")[1]
-    payload = decode_token(token)
+    payload = decode_token(authorization.split(" ")[1])
     if not payload:
         raise HTTPException(status_code=401, detail="Invalid token")
     return payload
 
-# ---------------- REGISTER ----------------
 @app.post("/register")
 def register(user: schemas.Register, db: Session = Depends(get_db)):
-    existing = db.query(models.User).filter(models.User.email == user.email).first()
-    if existing:
+    if db.query(models.User).filter(models.User.email == user.email).first():
         return {"error": "Email already registered"}
-
-    new_user = models.User(
-        email=user.email,
+    db.add(models.User(
+        name=user.name, email=user.email,
         password=hash_password(user.password),
-        is_admin=user.is_admin
-    )
-    db.add(new_user)
+        phone=user.phone, is_admin=user.is_admin
+    ))
     db.commit()
-    return {"message": "User registered successfully"}
+    return {"message": "Registered successfully"}
 
-# ---------------- LOGIN ----------------
 @app.post("/login")
 def login(user: schemas.Login, db: Session = Depends(get_db)):
     db_user = db.query(models.User).filter(models.User.email == user.email).first()
-
     if not db_user or not verify_password(user.password, db_user.password):
         return {"error": "Invalid email or password"}
-
     token = create_token({
         "user_id": db_user.id,
-        "is_admin": db_user.is_admin
+        "is_admin": db_user.is_admin,
+        "name": db_user.name or db_user.email
     })
-    return {"token": token}
+    return {"token": token, "name": db_user.name, "is_admin": db_user.is_admin}
 
-# ---------------- ADD TRAIN (Admin) ----------------
-@app.post("/admin/add_train")
-def add_train(
-    train: schemas.TrainCreate,
-    db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
-):
-    if not current_user.get("is_admin"):
-        raise HTTPException(status_code=403, detail="Admins only")
+@app.get("/trains")
+def get_all_trains(db: Session = Depends(get_db),
+                   cu: dict = Depends(get_current_user)):
+    return db.query(models.Train).all()
 
-    new_train = models.Train(**train.dict())
-    db.add(new_train)
-    db.commit()
-    return {"message": "New train added!"}
-
-# ---------------- SEARCH TRAINS ----------------
 @app.post("/user/get_train")
-def get_train(
-    data: schemas.TrainSearch,
-    db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
-):
+def search_trains(data: schemas.TrainSearch, db: Session = Depends(get_db),
+                  cu: dict = Depends(get_current_user)):
     trains = db.query(models.Train).filter(
-        models.Train.starting.ilike(data.starting),
+        models.Train.source.ilike(data.source),
         models.Train.destination.ilike(data.destination)
     ).all()
-    return trains if trains else []
+    return trains
 
-# ---------------- BOOK SEAT ----------------
-@app.post("/user/book_seat")
-def book_seat(
-    data: schemas.BookSeat,
-    db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
-):
-    train = db.query(models.Train).filter(models.Train.id == data.train_id).first()
-
-    if not train:
-        return {"message": "Train not found"}
-    if train.seats <= 0:
-        return {"message": "No seats available"}
-
-    seat_num = train.seats
-    train.seats -= 1
-
-    booking = models.Booking(
-        user_id=current_user["user_id"],
-        train_id=train.id,
-        status="Booked",
-        seat_number=seat_num
+@app.post("/admin/add_train")
+def add_train(train: schemas.TrainCreate, db: Session = Depends(get_db),
+              cu: dict = Depends(get_current_user)):
+    if not cu.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Admins only")
+    t = models.Train(
+        train_name=train.train_name, train_number=train.train_number,
+        source=train.source, destination=train.destination,
+        total_seats=train.total_seats, available_seats=train.total_seats
     )
-    db.add(booking)
+    db.add(t)
     db.commit()
-    db.refresh(booking)
-    return {"message": "Booking successful!", "booking_id": booking.id}
+    db.refresh(t)
+    return {"message": "Train added!", "train_id": t.id}
 
-# ---------------- MY BOOKINGS ----------------
-@app.get("/user/my_bookings")
-def my_bookings(
-    db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
-):
-    return db.query(models.Booking).filter(
-        models.Booking.user_id == current_user["user_id"]
-    ).all()
-
-# ---------------- CANCEL BOOKING ----------------
-@app.post("/user/cancel_booking")
-def cancel_booking(
-    data: schemas.BookingDetails,
-    db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
-):
-    booking = db.query(models.Booking).filter(
-        models.Booking.id == data.booking_id,
-        models.Booking.user_id == current_user["user_id"]
-    ).first()
-
-    if not booking:
-        return {"error": "Booking not found"}
-    if booking.status == "Cancelled":
-        return {"error": "Already cancelled"}
-
-    # Restore the seat
-    train = db.query(models.Train).filter(models.Train.id == booking.train_id).first()
-    if train:
-        train.seats += 1
-
-    booking.status = "Cancelled"
-    db.commit()
-    return {"message": "Booking cancelled successfully"}
-
-# ---------------- ALL TRAINS (Admin) ----------------
 @app.get("/admin/all_trains")
-def all_trains(
-    db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
-):
-    if not current_user.get("is_admin"):
+def all_trains(db: Session = Depends(get_db),
+               cu: dict = Depends(get_current_user)):
+    if not cu.get("is_admin"):
         raise HTTPException(status_code=403, detail="Admins only")
     return db.query(models.Train).all()
 
-# ---------------- DELETE TRAIN (Admin) ----------------
 @app.delete("/admin/delete_train/{train_id}")
-def delete_train(
-    train_id: int,
-    db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
-):
-    if not current_user.get("is_admin"):
+def delete_train(train_id: int, db: Session = Depends(get_db),
+                 cu: dict = Depends(get_current_user)):
+    if not cu.get("is_admin"):
         raise HTTPException(status_code=403, detail="Admins only")
-    train = db.query(models.Train).filter(models.Train.id == train_id).first()
-    if not train:
+    t = db.query(models.Train).filter(models.Train.id == train_id).first()
+    if not t:
         return {"error": "Train not found"}
-    db.delete(train)
+    db.delete(t)
     db.commit()
     return {"message": "Train deleted"}
 
-# ---------------- BOOKING DETAILS ----------------
-@app.post("/user/booking_details")
-def booking_details(
-    data: schemas.BookingDetails,
-    db: Session = Depends(get_db),
-    current_user: dict = Depends(get_current_user)
-):
-    booking = db.query(models.Booking).filter(models.Booking.id == data.booking_id).first()
-    if not booking:
-        return {"message": "Booking not found"}
-    return booking
+@app.post("/user/book_seat")
+def book_seat(data: schemas.BookSeat, db: Session = Depends(get_db),
+              cu: dict = Depends(get_current_user)):
+    from datetime import date
+    train = db.query(models.Train).filter(models.Train.id == data.train_id).first()
+    if not train:
+        return {"error": "Train not found"}
+    if train.available_seats < data.seats_booked:
+        return {"error": f"Only {train.available_seats} seats available"}
+    train.available_seats -= data.seats_booked
+    res = models.Reservation(
+        user_id=cu["user_id"], train_id=train.id,
+        journey_date=date.fromisoformat(data.journey_date),
+        seats_booked=data.seats_booked, status="Booked"
+    )
+    db.add(res)
+    db.flush()
+    amount = data.seats_booked * 500.00
+    db.add(models.Payment(
+        reservation_id=res.id, amount=amount, payment_status="Paid"
+    ))
+    db.commit()
+    db.refresh(res)
+    return {
+        "message": "Booking confirmed!",
+        "booking_id": res.id,
+        "seats_booked": data.seats_booked,
+        "amount_paid": float(amount),
+        "journey_date": str(data.journey_date)
+    }
+
+@app.get("/user/my_bookings")
+def my_bookings(db: Session = Depends(get_db),
+                cu: dict = Depends(get_current_user)):
+    reservations = db.query(models.Reservation).filter(
+        models.Reservation.user_id == cu["user_id"]
+    ).order_by(models.Reservation.booking_time.desc()).all()
+    result = []
+    for r in reservations:
+        train = db.query(models.Train).filter(models.Train.id == r.train_id).first()
+        payment = db.query(models.Payment).filter(
+            models.Payment.reservation_id == r.id).first()
+        result.append({
+            "id": r.id,
+            "train_name": train.train_name if train else "Unknown",
+            "train_number": train.train_number if train else "-",
+            "source": train.source if train else "-",
+            "destination": train.destination if train else "-",
+            "journey_date": str(r.journey_date),
+            "seats_booked": r.seats_booked,
+            "status": r.status,
+            "booking_time": str(r.booking_time),
+            "amount": float(payment.amount) if payment else 0
+        })
+    return result
+
+@app.post("/user/cancel_booking")
+def cancel_booking(data: schemas.BookingDetails, db: Session = Depends(get_db),
+                   cu: dict = Depends(get_current_user)):
+    res = db.query(models.Reservation).filter(
+        models.Reservation.id == data.booking_id,
+        models.Reservation.user_id == cu["user_id"]
+    ).first()
+    if not res:
+        return {"error": "Booking not found"}
+    if res.status == "Cancelled":
+        return {"error": "Already cancelled"}
+    train = db.query(models.Train).filter(models.Train.id == res.train_id).first()
+    if train:
+        train.available_seats += res.seats_booked
+    res.status = "Cancelled"
+    payment = db.query(models.Payment).filter(
+        models.Payment.reservation_id == res.id).first()
+    if payment:
+        payment.payment_status = "Refunded"
+    db.commit()
+    return {"message": "Booking cancelled and refund initiated"}
+
+@app.post("/feedback")
+def submit_feedback(data: schemas.FeedbackCreate, db: Session = Depends(get_db)):
+    db.add(models.Feedback(
+        user_name=data.user_name, email=data.email, message=data.message
+    ))
+    db.commit()
+    return {"message": "Feedback submitted. Thank you!"}
+
+@app.get("/admin/feedback")
+def get_feedback(db: Session = Depends(get_db),
+                 cu: dict = Depends(get_current_user)):
+    if not cu.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Admins only")
+    return db.query(models.Feedback).order_by(
+        models.Feedback.submitted_at.desc()).all()
+
+@app.get("/admin/stats")
+def admin_stats(db: Session = Depends(get_db),
+                cu: dict = Depends(get_current_user)):
+    if not cu.get("is_admin"):
+        raise HTTPException(status_code=403, detail="Admins only")
+    payments = db.query(models.Payment).filter(
+        models.Payment.payment_status == "Paid").all()
+    return {
+        "total_users":        db.query(models.User).count(),
+        "total_trains":       db.query(models.Train).count(),
+        "total_reservations": db.query(models.Reservation).count(),
+        "active_bookings":    db.query(models.Reservation).filter(
+                                models.Reservation.status == "Booked").count(),
+        "total_revenue":      sum(float(p.amount) for p in payments)
+    }
