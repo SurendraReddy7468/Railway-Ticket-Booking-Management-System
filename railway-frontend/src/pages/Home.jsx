@@ -1,179 +1,171 @@
+import React from "react";
+
 export default function Home({ setPage, user }) {
+
   const features = [
-    { icon: "⚡", title: "Instant Booking",   desc: "Book seats in seconds with real-time availability" },
-    { icon: "🎫", title: "Easy Cancellation", desc: "Cancel anytime with instant refund processing" },
-    { icon: "📱", title: "Track Bookings",    desc: "View all your journeys and download tickets" },
-    { icon: "🔒", title: "Secure Payments",   desc: "100% secure transactions with payment history" },
+    {
+      title: "Instant Booking",
+      desc: "Book seats in seconds with real-time availability",
+      image: "/images/custom/Booking.png"
+    },
+    {
+      title: "Easy Cancellation",
+      desc: "Cancel anytime with instant refund processing",
+      image: "/images/custom/cancellation.png"
+    },
+    {
+      title: "Track Bookings",
+      desc: "View all your journeys and download tickets",
+      image: "/images/custom/tracking.png"
+    },
+    {
+      title: "Secure Payments",
+      desc: "100% secure transactions with payment history",
+      image: "/images/custom/payment.png"
+    }
   ];
 
   const stats = [
-    { value: "500+",  label: "Trains" },
-    { value: "50K+",  label: "Passengers" },
-    { value: "100+",  label: "Cities" },
+    { value: "500+", label: "Trains" },
+    { value: "50K+", label: "Passengers" },
+    { value: "100+", label: "Cities" },
     { value: "99.9%", label: "Uptime" },
   ];
 
   const popularRoutes = [
-    { from: "Delhi",     to: "Mumbai",    duration: "16h", price: "₹500" },
-    { from: "Mumbai",    to: "Chennai",   duration: "12h", price: "₹500" },
-    { from: "Delhi",     to: "Kolkata",   duration: "18h", price: "₹500" },
-    { from: "Bangalore", to: "Hyderabad", duration: "6h",  price: "₹500" },
+    { from: "Delhi", to: "Mumbai", duration: "16h", price: "₹500" },
+    { from: "Mumbai", to: "Chennai", duration: "12h", price: "₹500" },
+    { from: "Delhi", to: "Kolkata", duration: "18h", price: "₹500" },
+    { from: "Bangalore", to: "Hyderabad", duration: "6h", price: "₹500" },
   ];
 
   return (
     <div style={{ minHeight: "calc(100vh - 64px)" }}>
 
       {/* HERO */}
-      <div style={{ position: "relative", overflow: "hidden", padding: "90px 24px 80px" }}>
-        <div style={{ position: "absolute", top: -100, left: "10%", width: 500, height: 500, borderRadius: "50%", background: "radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", top: 50, right: "5%", width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(6,182,212,0.06) 0%, transparent 70%)", pointerEvents: "none" }} />
+      <div style={{ textAlign: "center", padding: "80px 20px" }}>
+        <h1 style={{ fontSize: 48, color: "#f0f6ff", marginBottom: 20 }}>
+          Book Your Train Journey
+        </h1>
+        <p style={{ color: "#7a92b4", marginBottom: 30 }}>
+          Fast, secure and easy railway ticket booking system
+        </p>
 
-        <div style={{ maxWidth: 800, margin: "0 auto", textAlign: "center", position: "relative" }}>
-          <div style={{
-            display: "inline-flex", alignItems: "center", gap: 8,
-            background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.25)",
-            borderRadius: 20, padding: "6px 16px", marginBottom: 28,
-            fontSize: 12, fontWeight: 600, color: "#60a5fa", letterSpacing: "0.1em", textTransform: "uppercase",
-          }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#10b981", display: "inline-block" }} />
-            India's Smart Railway Booking
-          </div>
-
-          <h1 style={{
-            fontFamily: "'Syne', sans-serif", fontSize: "clamp(40px, 7vw, 72px)",
-            fontWeight: 800, lineHeight: 1.05, marginBottom: 24,
-            background: "linear-gradient(135deg, #f0f6ff 0%, #60a5fa 50%, #06b6d4 100%)",
-            WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
-            letterSpacing: "-0.03em",
-          }}>
-            Book Your Train<br />Journey Today
-          </h1>
-
-          <p style={{ fontSize: 17, color: "#7a92b4", lineHeight: 1.7, marginBottom: 40, maxWidth: 560, margin: "0 auto 40px" }}>
-            Fast, reliable and hassle-free railway ticket booking. Search trains, book seats and manage all your travel in one place.
-          </p>
-
-          <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap", marginBottom: 60 }}>
-            <button className="btn-gold" style={{ padding: "14px 32px", fontSize: 15, borderRadius: 12 }}
-              onClick={() => setPage(user ? "search" : "register")}>
-              🔍 Search Trains
-            </button>
-            {!user && (
-              <button className="btn-outline" style={{ padding: "14px 32px", fontSize: 15, borderRadius: 12 }}
-                onClick={() => setPage("register")}>
-                Create Account →
-              </button>
-            )}
-          </div>
-
-          {/* Quick Search */}
-          <div style={{
-            background: "rgba(14,32,64,0.8)", border: "1px solid rgba(99,160,255,0.15)",
-            borderRadius: 16, padding: "20px 24px", display: "flex", gap: 12, alignItems: "center",
-            flexWrap: "wrap", backdropFilter: "blur(20px)", maxWidth: 700, margin: "0 auto",
-          }}>
-            <div style={{ flex: 1, minWidth: 140 }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: "#4a6080", letterSpacing: "0.1em", marginBottom: 6, textTransform: "uppercase" }}>FROM</div>
-              <input id="hero-from" placeholder="e.g. Delhi" style={{ background: "transparent", border: "none", padding: "4px 0", fontSize: 15, color: "#f0f6ff", fontWeight: 500, boxShadow: "none" }} />
-            </div>
-            <div style={{ color: "#f0b429", fontSize: 22, padding: "0 8px" }}>⇄</div>
-            <div style={{ flex: 1, minWidth: 140 }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: "#4a6080", letterSpacing: "0.1em", marginBottom: 6, textTransform: "uppercase" }}>TO</div>
-              <input id="hero-to" placeholder="e.g. Mumbai" style={{ background: "transparent", border: "none", padding: "4px 0", fontSize: 15, color: "#f0f6ff", fontWeight: 500, boxShadow: "none" }} />
-            </div>
-            <button className="btn-primary" style={{ padding: "12px 28px", borderRadius: 10, whiteSpace: "nowrap" }}
-              onClick={() => {
-                const from = document.getElementById("hero-from").value;
-                const to   = document.getElementById("hero-to").value;
-                if (from && to) sessionStorage.setItem("hs", JSON.stringify({ from, to }));
-                setPage("search");
-              }}>
-              Search
-            </button>
-          </div>
-        </div>
+        <button
+          className="btn-gold"
+          onClick={() => setPage(user ? "search" : "register")}
+        >
+          🔍 Search Trains
+        </button>
       </div>
 
       {/* STATS */}
-      <div style={{ background: "rgba(14,32,64,0.4)", borderTop: "1px solid rgba(99,160,255,0.08)", borderBottom: "1px solid rgba(99,160,255,0.08)", padding: "32px 24px" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 24 }}>
-          {stats.map((s, i) => (
-            <div key={i} style={{ textAlign: "center" }}>
-              <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 30, fontWeight: 800, color: "#60a5fa" }}>{s.value}</div>
-              <div style={{ fontSize: 13, color: "#4a6080", marginTop: 4, fontWeight: 500 }}>{s.label}</div>
-            </div>
-          ))}
-        </div>
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(4,1fr)",
+        gap: 20,
+        padding: 20
+      }}>
+        {stats.map((s, i) => (
+          <div key={i} style={{ textAlign: "center" }}>
+            <h2 style={{ color: "#60a5fa" }}>{s.value}</h2>
+            <p style={{ color: "#7a92b4" }}>{s.label}</p>
+          </div>
+        ))}
       </div>
 
-      {/* POPULAR ROUTES */}
-      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "60px 24px" }}>
-        <div style={{ marginBottom: 32, display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-          <div>
-            <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: 28, color: "#f0f6ff", marginBottom: 6 }}>Popular Routes</h2>
-            <p style={{ color: "#7a92b4", fontSize: 14, marginBottom: 0 }}>Most booked train routes across India</p>
-          </div>
-          <button className="btn-outline" style={{ fontSize: 13 }} onClick={() => setPage("search")}>View All →</button>
-        </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 16 }}>
+      {/* ROUTES */}
+      <div style={{ padding: 40 }}>
+        <h2 style={{ color: "#f0f6ff" }}>Popular Routes</h2>
+
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+          gap: 20
+        }}>
           {popularRoutes.map((r, i) => (
-            <div key={i} className="card" style={{ cursor: "pointer", position: "relative", overflow: "hidden" }}
+            <div key={i}
+              className="card"
               onClick={() => {
                 sessionStorage.setItem("hs", JSON.stringify({ from: r.from, to: r.to }));
                 setPage("search");
-              }}>
-              <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: "linear-gradient(90deg, #3b82f6, #06b6d4)", opacity: 0.6 }} />
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-                <span style={{ fontSize: 12, color: "#4a6080", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em" }}>Route</span>
-                <span style={{ fontSize: 12, color: "#f0b429", fontWeight: 700 }}>{r.price}</span>
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <span style={{ fontWeight: 700, fontSize: 16, color: "#f0f6ff" }}>{r.from}</span>
-                <span style={{ color: "#4a6080", fontSize: 12, flex: 1, textAlign: "center" }}>━━ 🚂 ━━</span>
-                <span style={{ fontWeight: 700, fontSize: 16, color: "#f0f6ff" }}>{r.to}</span>
-              </div>
-              <div style={{ marginTop: 10, fontSize: 12, color: "#7a92b4" }}>⏱ {r.duration}</div>
+              }}
+              style={{ padding: 20, cursor: "pointer" }}
+            >
+              <p style={{ color: "#f0b429" }}>{r.price}</p>
+              <h3 style={{ color: "#fff" }}>{r.from} → {r.to}</h3>
+              <p style={{ color: "#7a92b4" }}>⏱ {r.duration}</p>
             </div>
           ))}
         </div>
       </div>
 
-      {/* FEATURES */}
-      <div style={{ background: "rgba(14,32,64,0.3)", borderTop: "1px solid rgba(99,160,255,0.08)", padding: "60px 24px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 40 }}>
-            <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: 28, color: "#f0f6ff", marginBottom: 6 }}>Everything You Need</h2>
-            <p style={{ color: "#7a92b4", fontSize: 14 }}>A complete railway booking experience</p>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20 }}>
-            {features.map((f, i) => (
-              <div key={i} className="card" style={{ textAlign: "center", padding: "32px 24px" }}>
-                <div style={{ fontSize: 36, marginBottom: 16 }}>{f.icon}</div>
-                <h3 style={{ fontSize: 16, marginBottom: 8, fontFamily: "'Syne', sans-serif", color: "#f0f6ff" }}>{f.title}</h3>
-                <p style={{ fontSize: 13, color: "#7a92b4", lineHeight: 1.6 }}>{f.desc}</p>
-              </div>
-            ))}
-          </div>
+      {/* FEATURES (FIXED ICON ISSUE) */}
+      <div style={{ padding: 50 }}>
+        <h2 style={{ textAlign: "center", color: "#f0f6ff" }}>
+          Everything You Need
+        </h2>
+
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
+          gap: 20,
+          marginTop: 30
+        }}>
+          {features.map((f, i) => (
+            <div key={i}
+              className="card"
+              style={{
+                textAlign: "center",
+                padding: 30,
+                transition: "0.3s"
+              }}
+            >
+              {/* IMAGE ICON */}
+              <img
+                src={f.image}
+                alt={f.title}
+                style={{
+                  width: 150,
+                  height: 150,
+                  objectFit: "contain",
+                  marginBottom: 18
+                }}
+                onError={(e) => {
+                   console.log("FAILED:", f.image);
+                   e.target.src = "/images/custom/cancellatin.png"; 
+             }}  
+              />
+
+              <h3 style={{ color: "#fff" }}>{f.title}</h3>
+              <p style={{ color: "#7a92b4" }}>{f.desc}</p>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* CTA */}
       {!user && (
-        <div style={{ padding: "60px 24px", textAlign: "center" }}>
-          <div style={{ maxWidth: 500, margin: "0 auto" }}>
-            <h2 style={{ fontFamily: "'Syne', sans-serif", fontSize: 32, marginBottom: 16, color: "#f0f6ff" }}>Ready to Book?</h2>
-            <p style={{ color: "#7a92b4", marginBottom: 28 }}>Create a free account and start booking train tickets in minutes.</p>
-            <button className="btn-gold" style={{ padding: "14px 40px", fontSize: 15, borderRadius: 12 }} onClick={() => setPage("register")}>
-              Get Started Free →
-            </button>
-          </div>
+        <div style={{ textAlign: "center", padding: 50 }}>
+          <h2 style={{ color: "#fff" }}>Ready to Book?</h2>
+          <button
+            className="btn-gold"
+            onClick={() => setPage("register")}
+          >
+            Get Started →
+          </button>
         </div>
       )}
 
-      {/* Footer */}
-      <div style={{ borderTop: "1px solid rgba(99,160,255,0.08)", padding: "24px", textAlign: "center", color: "#4a6080", fontSize: 13 }}>
-        © 2024 RailBook · India's Smart Railway Booking System
+      {/* FOOTER */}
+      <div style={{
+        textAlign: "center",
+        padding: 20,
+        color: "#7a92b4"
+      }}>
+        © 2024 Railway Booking System
       </div>
+
     </div>
   );
 }
